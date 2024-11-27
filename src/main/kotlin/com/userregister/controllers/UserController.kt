@@ -1,7 +1,10 @@
 package com.userregister.controllers
 
 import com.userregister.domain.users.User
+import com.userregister.domain.users.UserRequestDTO
+import com.userregister.domain.users.UserResponseDTO
 import com.userregister.services.UserService
+import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -13,26 +16,26 @@ import java.util.UUID
 class UsersController (@Autowired val userService: UserService) {
 
     @GetMapping
-    fun getAllUsers(): ResponseEntity<List<User>> {
+    fun getAllUsers(): ResponseEntity<List<UserResponseDTO>> {
         val users = userService.getAllUsers()
         return ResponseEntity(users, HttpStatus.OK)
     }
 
     @GetMapping("/{id}")
-    fun getUserById(@PathVariable("id") id: UUID): ResponseEntity<User> {
+    fun getUserById(@PathVariable("id") id: UUID): ResponseEntity<UserResponseDTO> {
         val user = userService.getUserById(id)
         return ResponseEntity(user, HttpStatus.OK)
     }
 
     @PostMapping("/register")
-    fun createUser(@RequestBody user: User): ResponseEntity<User> {
-        userService.createUser(user)
+    fun createUser(@RequestBody @Valid userRequestDTO: UserRequestDTO): ResponseEntity<User> {
+        val user =userService.createUser(userRequestDTO)
         return ResponseEntity(user, HttpStatus.CREATED)
     }
 
     @PutMapping("/{id}")
-    fun updateUser(@RequestBody user: User, @PathVariable id:UUID): ResponseEntity<User> {
-        userService.updateUser(user, id)
+    fun updateUser(@RequestBody @Valid userRequestDTO: UserRequestDTO, @PathVariable id:UUID): ResponseEntity<UserResponseDTO> {
+        val user = userService.updateUser(userRequestDTO, id)
         return ResponseEntity(user, HttpStatus.OK)
     }
 
