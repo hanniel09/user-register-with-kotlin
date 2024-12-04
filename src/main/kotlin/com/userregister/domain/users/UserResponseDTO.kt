@@ -2,8 +2,8 @@ package com.userregister.domain.users
 
 import java.util.UUID
 
-class UserResponseDTO(
-    var id: UUID,
-    var name: String,
-    var email: String,
+data class UserResponseDTO(
+    val id: UUID,
+    val name: String,
+    val email: String,
 )
