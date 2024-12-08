@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class UserService(@Autowired val userRepository: UserRepository) {
+class UsersService(@Autowired val userRepository: UserRepository) {
     fun getAllUsers(): List<UserResponseDTO> {
        val  users: List<User> = userRepository.findAll().toList()
         return users.map {

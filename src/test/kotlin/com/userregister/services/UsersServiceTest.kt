@@ -2,17 +2,16 @@ import com.userregister.domain.users.User
 import com.userregister.domain.users.UserRequestDTO
 import com.userregister.domain.users.UserResponseDTO
 import com.userregister.repositories.UserRepository
-import com.userregister.services.UserService
+import com.userregister.services.UsersService
 import io.mockk.*
-import jakarta.persistence.EntityNotFoundException
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.util.*
 import kotlin.test.assertEquals
 
-class UserServiceTest {
+class UsersServiceTest {
     private val userRepository: UserRepository = mockk()
-    private val userService = UserService(userRepository)
+    private val usersService = UsersService(userRepository)
 
 
     @Test
@@ -22,7 +21,7 @@ class UserServiceTest {
         val users = listOf(user1, user2)
         every { userRepository.findAll() } returns users
 
-        val result = userService.getAllUsers()
+        val result = usersService.getAllUsers()
 
         val expected = users.map {
             UserResponseDTO(id = it.id!!, name = it.name, email = it.email)
@@ -41,7 +40,7 @@ class UserServiceTest {
         every { userRepository.findById(userId) } returns Optional.of(user)
 
 
-        val result = userService.getUserById(userId)
+        val result = usersService.getUserById(userId)
 
         assertEquals(userResponseDTO, result)
 
@@ -56,7 +55,7 @@ class UserServiceTest {
         every { userRepository.findById(userId) } returns Optional.empty()
 
         val exception = assertThrows<RuntimeException> {
-            userService.getUserById(userId)
+            usersService.getUserById(userId)
         }
 
         assertEquals(exception.message, "User with id: $userId wasn't found")
@@ -71,7 +70,7 @@ class UserServiceTest {
 
         every { userRepository.save(any<User>()) } returns user
 
-        val result = userService.createUser(userRequestDTO)
+        val result = usersService.createUser(userRequestDTO)
 
         val expected = User(id = user.id!!, name = user.name, email = user.email)
 
@@ -91,7 +90,7 @@ class UserServiceTest {
 
         every { userRepository.save(any()) } returns updatedUser
 
-        val result = userService.updateUser(updateUserRequestDTO, userId)
+        val result = usersService.updateUser(updateUserRequestDTO, userId)
 
         val expected = UserResponseDTO(id = updatedUser.id!!, name = updatedUser.name, email = updatedUser.email)
 
@@ -109,7 +108,7 @@ class UserServiceTest {
 
         every { userRepository.deleteById(userId) } just runs
 
-        userService.deleteUserById(userId)
+        usersService.deleteUserById(userId)
 
         verify { userRepository.deleteById(userId) }
     }
